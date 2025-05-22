@@ -4,7 +4,7 @@
   "codeowners": [
     "@tramsdale"
   ],
-  "config_flow": true,
+  "config_flow": false,
   "dependencies": [
     "application_credentials"
   ],
@@ -14,5 +14,6 @@
   "quality_scale": "bronze",
   "requirements": [],
   "ssdp": [],
-  "zeroconf": []
+  "zeroconf": [],
+  "version": "0.0.1"
 }
