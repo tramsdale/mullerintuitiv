@@ -1,5 +1,7 @@
 """The IntuisNetatmo climate integration for Home Assistant."""
+
 from __future__ import annotations
+
 XXX
 
 import logging
@@ -29,23 +31,28 @@ from homeassistant.helpers import entity_platform
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from IntuisNetatmo import IntuisNetatmo
 
 
 _LOGGER = logging.getLogger(__name__)
 
 # Configuration schema
-CONFIG_SCHEMA = vol.Schema({
-    vol.Required(CONF_USERNAME): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-    vol.Required(CONF_CLIENT_ID): cv.string,
-    vol.Required(CONF_CLIENT_SECRET): cv.string,
-})
+CONFIG_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_USERNAME): cv.string,
+        vol.Required(CONF_PASSWORD): cv.string,
+        vol.Required(CONF_CLIENT_ID): cv.string,
+        vol.Required(CONF_CLIENT_SECRET): cv.string,
+    }
+)
 
 # Service schema for setting temperature
 SERVICE_SET_TEMPERATURE = "set_temperature"
-SERVICE_SET_TEMPERATURE_SCHEMA = vol.Schema({
-    vol.Required(ATTR_TEMPERATURE): vol.Coerce(float),
-})
+SERVICE_SET_TEMPERATURE_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_TEMPERATURE): vol.Coerce(float),
+    }
+)
 
 # Map IntuisNetatmo modes to Home Assistant modes
 MODE_MAP = {
@@ -62,6 +69,7 @@ ACTION_MAP = {
     "off": HVACAction.IDLE,
     "hg": HVACAction.IDLE,
 }
+
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -96,6 +104,7 @@ async def async_setup_platform(
         "async_set_temperature",
     )
 
+
 class IntuisNetatmoClimate(ClimateEntity):
     """Representation of an IntuisNetatmo climate device."""
 
@@ -108,8 +117,7 @@ class IntuisNetatmoClimate(ClimateEntity):
         self._attr_temperature_unit = UnitOfTemperature.CELSIUS
         self._attr_precision = PRECISION_TENTHS
         self._attr_supported_features = (
-            ClimateEntityFeature.TARGET_TEMPERATURE |
-            ClimateEntityFeature.PRESET_MODE
+            ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.PRESET_MODE
         )
         self._attr_hvac_modes = [HVACMode.AUTO, HVACMode.HEAT, HVACMode.OFF]
         self._attr_preset_modes = ["program", "manual", "off", "hg"]
@@ -165,9 +173,7 @@ class IntuisNetatmoClimate(ClimateEntity):
             if mode == "manual":
                 # Set to manual mode with current target temperature
                 self._client.set_room_mode(
-                    self._room.id,
-                    mode,
-                    self._room.target_temp or 20.0
+                    self._room.id, mode, self._room.target_temp or 20.0
                 )
             else:
                 self._client.set_room_mode(self._room.id, mode)
@@ -182,9 +188,7 @@ class IntuisNetatmoClimate(ClimateEntity):
             if preset_mode == "manual":
                 # Set to manual mode with current target temperature
                 self._client.set_room_mode(
-                    self._room.id,
-                    preset_mode,
-                    self._room.target_temp or 20.0
+                    self._room.id, preset_mode, self._room.target_temp or 20.0
                 )
             else:
                 self._client.set_room_mode(self._room.id, preset_mode)
@@ -203,4 +207,4 @@ class IntuisNetatmoClimate(ClimateEntity):
                     self._room = room
                     break
         except Exception as err:
-            _LOGGER.error("Error updating climate entity: %s", err) 
+            _LOGGER.error("Error updating climate entity: %s", err)
